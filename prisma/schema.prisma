@@ -7,7 +7,7 @@
 generator client {
   provider      = "prisma-client-js"
   binaryTargets = ["native", "rhel-openssl-3.0.x"]
-  // output       = "./lib/generated/"  // OVO UKLONI!
+ 
 }
 
 datasource db {
@@ -15,6 +15,12 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TestMigration {
+
+model Stanje {
   id Int @id @default(autoincrement())
+  korisnik String
+  stanje Float
+  kredit Float
+  isplata Float
+  uplate Float
 }
