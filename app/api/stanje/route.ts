@@ -13,10 +13,10 @@ export async function POST(request: Request) {
   const stanje = await prisma.stanje.create({
     data: {
       korisnik: data.korisnik,
-      stanje: data.stanje,
-      kredit: data.kredit,
-      isplata: data.isplata,
-      uplate: data.uplate,
+      stanje: Number(data.stanje),
+      kredit: Number(data.kredit),
+      isplata: Number(data.isplata),
+      uplate: Number(data.uplate),
     },
   });
   return NextResponse.json(stanje, { status: 201 });

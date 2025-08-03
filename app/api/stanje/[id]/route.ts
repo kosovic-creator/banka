@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import prisma from '@/lib/prisma';
 
 export async function GET(request: NextRequest) {
@@ -22,4 +22,33 @@ export async function DELETE(request: NextRequest) {
     where: { id: Number(id) },
   });
   return new Response(null, { status: 204 });
+}
+
+export async function POST(request: Request) {
+  const data = await request.json();
+  const stanje = await prisma.stanje.create({
+    data: {
+      korisnik: data.korisnik,
+      stanje: Number(data.stanje),
+      kredit: Number(data.kredit),
+      isplata: Number(data.isplata),
+      uplate: Number(data.uplate),
+    },
+  });
+  return NextResponse.json(stanje, { status: 201 });
+}
+
+export async function PUT(request: Request) {
+  const data = await request.json();
+  const stanje = await prisma.stanje.update({
+    where: { id: data.id },
+    data: {
+      korisnik: data.korisnik,
+      stanje: Number(data.stanje),
+      kredit: Number(data.kredit),
+      isplata: Number(data.isplata),
+      uplate: Number(data.uplate),
+    },
+  });
+  return NextResponse.json(stanje);
 }
