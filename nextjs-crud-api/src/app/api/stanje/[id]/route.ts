@@ -1,47 +1,35 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import prisma from '@/prisma/client';
+import { NextRequest } from 'next/server';
+import { PrismaClient } from '@prisma/client';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { method } = req;
-  const { id } = req.query;
+const prisma = new PrismaClient();
 
-  switch (method) {
-    case 'GET':
-      try {
-        const stanje = await prisma.stanje.findUnique({
-          where: { id: Number(id) },
-        });
-        if (!stanje) {
-          return res.status(404).json({ message: 'Stanje not found' });
-        }
-        return res.status(200).json(stanje);
-      } catch (error) {
-        return res.status(500).json({ message: 'Error retrieving stanje' });
-      }
+export async function GET(request: NextRequest) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
 
-    case 'PUT':
-      try {
-        const updatedStanje = await prisma.stanje.update({
-          where: { id: Number(id) },
-          data: req.body,
-        });
-        return res.status(200).json(updatedStanje);
-      } catch (error) {
-        return res.status(500).json({ message: 'Error updating stanje' });
-      }
+  try {
+    const stanje = await prisma.stanje.findUnique({
+      where: { id: Number(id) },
+    });
+    if (!stanje) {
+      return new Response(JSON.stringify({ message: 'Stanje not found' }), { status: 404 });
+    }
+    return new Response(JSON.stringify(stanje), { status: 200 });
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'Error retrieving stanje' }), { status: 500 });
+  }
+}
 
-    case 'DELETE':
-      try {
-        await prisma.stanje.delete({
-          where: { id: Number(id) },
-        });
-        return res.status(204).end();
-      } catch (error) {
-        return res.status(500).json({ message: 'Error deleting stanje' });
-      }
+export async function DELETE(request: NextRequest) {
+  const url = new URL(request.url);
+  const id = url.pathname.split('/').pop();
 
-    default:
-      res.setHeader('Allow', ['GET', 'PUT', 'DELETE']);
-      return res.status(405).end(`Method ${method} Not Allowed`);
+  try {
+    await prisma.stanje.delete({
+      where: { id: Number(id) },
+    });
+    return new Response(null, { status: 204 });
+  } catch (error) {
+    return new Response(JSON.stringify({ message: 'Error deleting stanje' }), { status: 500 });
   }
 }
