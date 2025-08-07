@@ -122,6 +122,57 @@ export default function StanjeCRUD() {
           placeholder="Uplate"
           className="w-full px-3 py-2 border rounded"
         />
+         <input
+          name="stanje1"
+          type="number"
+          // value={form.uplate || ''}
+          // onChange={handleChange}
+          placeholder="Stanje1"
+          className=" px-3 py-2 border rounded"
+        />
+        <input
+          name="kredit1"
+          type="number"
+          // value={form.uplate || ''}
+          // onChange={handleChange}
+          placeholder="Kredit1"
+          className=" px-3 py-2 border rounded"
+        />
+         <input
+          name="uplate1"
+          type="number"
+          // value={form.uplate || ''}
+          // onChange={handleChange}
+          placeholder="Uplate1"
+          className=" px-3 py-2 border rounded"
+        />
+         <input
+          name="ispata1"
+          type="number"
+          // value={form.uplate || ''}
+          // onChange={handleChange}
+          placeholder="Isplata1"
+          className=" px-3 py-2 border rounded"
+        />
+       
+        
+         <button
+          type="button"
+          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+        >Uplati</button>
+        <button
+          type="button"
+          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+        >Isplati</button>
+         <button
+          type="button"
+          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+        >Kredit</button>
+        <button
+          type="button"
+          className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
+        >Stanje</button>
+         {/* Removed invalid nested buttons and stray type="button" text */}
         <button
           type="submit"
           className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
