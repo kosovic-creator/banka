@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer, useState } from 'react';
 
 type Stanje = {
   id: number;
@@ -10,7 +10,83 @@ type Stanje = {
   isplata: number;
   uplate: number;
 };
+const initialState = {
+  balance: 0,
+  loan: 0,
+  isActive: false
+};
 
+interface State {
+    balance: number;
+    loan: number;
+    isActive: boolean;
+}
+
+interface OpenAccountAction {
+    type: "openAccount";
+}
+
+interface DepositAction {
+    type: "deposit";
+    payload: number;
+}
+
+interface WithdrawAction {
+    type: "withdraw";
+    payload: number;
+}
+
+interface RequestLoanAction {
+    type: "requestLoan";
+    payload: number;
+}
+
+interface PayLoanAction {
+    type: "payLoan";
+}
+
+interface CloseAccountAction {
+    type: "closeAccount";
+}
+
+type Action =
+    | OpenAccountAction
+    | DepositAction
+    | WithdrawAction
+    | RequestLoanAction
+    | PayLoanAction
+    | CloseAccountAction;
+
+function reducer(state: State, action: Action): State {
+    if (!state.isActive && action.type !== "openAccount") return state;
+
+    switch (action.type) {
+        case "openAccount":
+            return {
+                ...state,
+                balance: 500,
+                isActive: true
+            };
+        case "deposit":
+            return { ...state, balance: state.balance + action.payload };
+        case "withdraw":
+            return { ...state, balance: state.balance - action.payload };
+        case "requestLoan":
+            if (state.loan > 0) return state;
+            return {
+                ...state,
+                loan: action.payload,
+                balance: state.balance + action.payload
+            };
+        case "payLoan":
+            return { ...state, loan: 0, balance: state.balance - state.loan };
+        case "closeAccount":
+            if (state.loan > 0 || state.balance !== 0) return state;
+            return initialState;
+        default:
+            throw new Error("Unkown");
+    }
+}
 export default function StanjeCRUD() {
   const [stanja, setStanja] = useState<Stanje[]>([]);
   const [form, setForm] = useState<Partial<Stanje>>({});
@@ -76,7 +152,10 @@ export default function StanjeCRUD() {
     setForm(s);
     setEditId(s.id);
   };
-
+ const [{ balance, loan, isActive }, dispatch] = useReducer(
+    reducer,
+    initialState
+  );
   return (
     <div className="max-w-2xl mx-auto mt-10 p-6 bg-white rounded-lg shadow">
       <h2 className="text-2xl font-bold mb-6 text-center">Stanje CRUD</h2>
@@ -122,7 +201,7 @@ export default function StanjeCRUD() {
           placeholder="Uplate"
           className="w-full px-3 py-2 border rounded"
         />
-         <input
+         {/* <input
           name="stanje1"
           type="number"
           // value={form.uplate || ''}
@@ -171,7 +250,7 @@ export default function StanjeCRUD() {
         <button
           type="button"
           className="w-full bg-red-600 text-white py-2 rounded hover:bg-red-700 transition"
-        >Stanje</button>
+        >Stanje</button> */}
          {/* Removed invalid nested buttons and stray type="button" text */}
         <button
           type="submit"
@@ -229,6 +308,60 @@ export default function StanjeCRUD() {
           ))}
         </tbody>
       </table>
+        <div className="App">
+        <h1>useReducer Bank Account</h1>
+        <p>Balance: {balance}</p>
+        <p>Loan: {loan}</p>
+
+        <p>
+          <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "openAccount" })}
+            disabled={isActive}
+          >
+            Open account
+          </button>
+        </p>
+        <p>
+           <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "deposit", payload: 150 })}
+            disabled={!isActive}
+          >
+            Deposit 150
+          </button>
+        </p>
+        <p>
+           <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "withdraw", payload: 50 })}
+            disabled={!isActive}
+          >
+            Withdraw 50
+          </button>
+        </p>
+        <p>
+          <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "requestLoan", payload: 5000 })}
+            disabled={!isActive}
+          >
+            Request a loan of 5000
+          </button>
+        </p>
+        <p>
+           <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "payLoan" })}
+            disabled={!isActive}
+          >
+            Pay loan
+          </button>
+        </p>
+        <p>
+          <button type="button" className="px-4 py-2 bg-blue-500 text-white rounded cursor-pointer"
+            onClick={() => dispatch({ type: "closeAccount" })}
+            disabled={!isActive}
+          >
+            Close account
+          </button>
+        </p>
+      </div>
     </div>
   );
 }
