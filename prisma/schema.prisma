@@ -19,6 +19,7 @@ datasource db {
 model Stanje {
   id Int @id @default(autoincrement())
   korisnik String
+  matičniBroj String
   stanje Float
   kredit Float
   isplata Float
