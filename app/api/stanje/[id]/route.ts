@@ -33,6 +33,7 @@ export async function POST(request: Request) {
       kredit: Number(data.kredit),
       isplata: Number(data.isplata),
       uplate: Number(data.uplate),
+      matičniBroj: data.matičniBroj,
     },
   });
   return NextResponse.json(stanje, { status: 201 });
@@ -48,6 +49,7 @@ export async function PUT(request: Request) {
       kredit: Number(data.kredit),
       isplata: Number(data.isplata),
       uplate: Number(data.uplate),
+      matičniBroj: data.matičniBroj,
     },
   });
   return NextResponse.json(stanje);
